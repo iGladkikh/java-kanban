@@ -2,27 +2,27 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class Epic extends Task {
-    private final HashMap<Integer, Subtask> tasks;
+    private final HashMap<Integer, Subtask> subtasks;
 
     public Epic(String name, String description) {
         super(name, description);
-        this.tasks = new HashMap<>();
+        this.subtasks = new HashMap<>();
     }
 
     public Epic(String name, String description, HashMap<Integer, Subtask> tasks) {
         super(name, description);
-        this.tasks = tasks;
+        this.subtasks = tasks;
         updateStatus();
     }
 
-    public void updateStatus() {
-        if (tasks.isEmpty()) {
-            this.status = Status.NEW;
+    private void updateStatus() {
+        if (subtasks.isEmpty()) {
+            setStatus(Status.NEW);
             return;
         }
 
         HashSet<Status> statuses = new HashSet<>();
-        for (Subtask task : tasks.values()) {
+        for (Subtask task : subtasks.values()) {
             if (task.getStatus() == Status.NEW) {
                 statuses.add(Status.NEW);
                 break;
@@ -32,27 +32,55 @@ public class Epic extends Task {
         }
 
         if (statuses.contains(Status.NEW)) {
-            this.status = Status.NEW;
+            setStatus(Status.NEW);
         } else if (statuses.contains(Status.IN_PROGRESS)) {
-            this.status = Status.IN_PROGRESS;
+            setStatus(Status.IN_PROGRESS);
         } else {
-            this.status = Status.DONE;
+            setStatus(Status.DONE);
         }
     }
 
-    public void addTask(Subtask task) {
-        tasks.put(task.getId(), task);
+    public void addSubtask(Subtask subtask) {
+        subtasks.putIfAbsent(subtask.getId(), subtask);
+        updateStatus();
     }
 
-    public void clearTasks() {
-        tasks.clear();
+    public void addSubtask(Task task) {
+        Subtask subtask = new Subtask(task.getName(), task.getDescription(), task.getStatus(), getId());
+        subtasks.put(subtask.getId(), subtask);
+        updateStatus();
     }
 
-    public void removeTaskById(int id) {
-        tasks.remove(id);
+    public void updateSubtask(Subtask subtask) {
+        int id = subtask.getId();
+        if (subtasks.containsKey(id)) {
+            subtasks.put(id, subtask);
+        }
+        updateStatus();
     }
 
-    public HashMap<Integer, Subtask> getTasks() {
-        return tasks;
+    public void clearSubtasks() {
+        subtasks.clear();
+        setStatus(Status.NEW);
+    }
+
+    public void removeSubtask(int id) {
+        subtasks.remove(id);
+        updateStatus();
+    }
+
+    public HashMap<Integer, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "id=" + getId() +
+                ", name='" + getName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                ", subtasks=" + subtasks.size() +
+                '}';
     }
 }

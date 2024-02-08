@@ -3,41 +3,32 @@ import java.util.Objects;
 public class Task {
     private static int totalTasksCount = 0;
     private final int id;
-    protected String name;
-    protected String description;
-    protected Status status;
+    private String name;
+    private String description;
+    private Status status;
 
     public Task(String name, String description) {
         id = getNextId();
+        status = Status.NEW;
         this.name = name;
         this.description = description;
-        status = Status.NEW;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id;
+    public Task(String name, String description, Status status) {
+        id = getNextId();
+        this.name = name;
+        this.description = description;
+        this.status = status;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+    public Task(String name, String description, String status) {
+        id = getNextId();
+        this.name = name;
+        this.description = description;
+        this.status = Status.valueOf(status);
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                '}';
-    }
-
-    private int getNextId() {
+    private static int getNextId() {
         return ++totalTasksCount;
     }
 
@@ -67,5 +58,32 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setStatus(String status) {
+        this.status = Status.valueOf(status);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
     }
 }
