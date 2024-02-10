@@ -17,9 +17,7 @@ public class Epic extends Task {
     }
 
     public void removeSubtask(int id) {
-        if (subtasks.contains(id)) {
-            subtasks.remove(id);
-        }
+        subtasks.remove(id);
     }
 
     public HashSet<Integer> getSubtasks() {
