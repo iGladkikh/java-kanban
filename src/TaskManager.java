@@ -38,18 +38,20 @@ public class TaskManager {
     public void updateEpic(Epic epic) {
         int id = epic.getId();
         if (epics.containsKey(id)) {
-            Epic updatedEpic = epics.get(id);
-            updatedEpic.setName(epic.getName());
-            updatedEpic.setDescription(epic.getDescription());
+            Epic tergetEpic = epics.get(id);
+            tergetEpic.setName(epic.getName());
+            tergetEpic.setDescription(epic.getDescription());
         }
     }
 
     public void removeEpic(int id) {
+        clearEpicSubtasks(id);
         epics.remove(id);
     }
 
     public void clearEpics() {
         epics.clear();
+        subtasks.clear();
     }
 
     private void calculateEpicStatus(int epicId) {
@@ -71,9 +73,10 @@ public class TaskManager {
             statuses.add(subtask.getStatus());
         }
 
-        if (statuses.size() == 1 && statuses.contains(Status.NEW)) {
+        int size = statuses.size();
+        if (size == 1 && statuses.contains(Status.NEW)) {
             epic.setStatus(Status.NEW);
-        } else if (statuses.size() == 1 && statuses.contains(Status.DONE)) {
+        } else if (size == 1 && statuses.contains(Status.DONE)) {
             epic.setStatus(Status.DONE);
         } else {
             epic.setStatus(Status.IN_PROGRESS);
