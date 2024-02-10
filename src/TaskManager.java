@@ -54,12 +54,7 @@ public class TaskManager {
         subtasks.clear();
     }
 
-    private void calculateEpicStatus(int epicId) {
-        if (!epics.containsKey(epicId)) {
-            return;
-        }
-
-        Epic epic = epics.get(epicId);
+    private void calculateEpicStatus(Epic epic) {
         Set<Integer> epicSubtasks = epic.getSubtasks();
 
         if (epicSubtasks.isEmpty()) {
@@ -100,10 +95,11 @@ public class TaskManager {
     public int addSubtask(Subtask subtask) {
         int epicId = subtask.getEpicId();
         if (epics.containsKey(epicId) && !isTaskContains(subtask)) {
+            Epic epic = epics.get(epicId);
             int subtaskId = subtask.getId();
-            epics.get(epicId).addSubtask(subtaskId);
+            epic.addSubtask(subtaskId);
             subtasks.put(subtaskId, subtask);
-            calculateEpicStatus(epicId); // Метод вызывается также в строке 120, где объекта epic нет, поэтому передается id.
+            calculateEpicStatus(epic);
             return subtaskId;
         }
         return -1;
@@ -117,14 +113,15 @@ public class TaskManager {
         int id = subtask.getId();
         if (subtasks.containsKey(id)) {
             subtasks.put(id, subtask);
-            calculateEpicStatus(subtask.getEpicId());
+            calculateEpicStatus(epics.get(subtask.getEpicId()));
         }
     }
 
     public void removeSubtask(int id) {
         int epicId = subtasks.get(id).getEpicId();
-        epics.get(epicId).removeSubtask(id);
-        calculateEpicStatus(epicId);
+        Epic epic = epics.get(epicId);
+        epic.removeSubtask(id);
+        calculateEpicStatus(epic);
         subtasks.remove(id);
     }
 
