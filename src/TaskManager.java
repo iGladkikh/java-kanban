@@ -74,7 +74,7 @@ public class TaskManager {
         }
 
         int size = statuses.size();
-        if (size == 1 && statuses.contains(Status.NEW)) {
+        if (size == 1 && statuses.contains(Status.NEW)) { // statuses -> HashSet, при 2 задачах в статусе NEW сработает первое условие
             epic.setStatus(Status.NEW);
         } else if (size == 1 && statuses.contains(Status.DONE)) {
             epic.setStatus(Status.DONE);
@@ -103,7 +103,7 @@ public class TaskManager {
             int subtaskId = subtask.getId();
             epics.get(epicId).addSubtask(subtaskId);
             subtasks.put(subtaskId, subtask);
-            calculateEpicStatus(epicId);
+            calculateEpicStatus(epicId); // Метод вызывается также в строке 120, где объекта epic нет, поэтому передается id.
             return subtaskId;
         }
         return -1;
