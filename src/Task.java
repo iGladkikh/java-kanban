@@ -21,13 +21,6 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String name, String description, String status) {
-        id = getNextId();
-        this.name = name;
-        this.description = description;
-        this.status = Status.valueOf(status);
-    }
-
     private static int getNextId() {
         return ++totalTasksCount;
     }
@@ -58,10 +51,6 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public void setStatus(String status) {
-        this.status = Status.valueOf(status);
     }
 
     @Override
