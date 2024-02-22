@@ -46,6 +46,4 @@ public interface TaskManager {
     void clearAllData();
 
     List<Task> getHistory();
-
-    void clearHistory();
 }

@@ -97,17 +97,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void addHistory() {
-        taskManager.clearHistory();
         taskManager.getTask(lastTask.getId());
         taskManager.getEpic(lastEpic.getId());
         taskManager.getSubtask(lastSubtask.getId());
         assertEquals(3, taskManager.getHistory().size(), "Неверное количество элементов в истории.");
-    }
-
-    @Test
-    void clearHistory() {
-        taskManager.getTask(lastTask.getId());
-        taskManager.clearHistory();
-        assertTrue(taskManager.getHistory().isEmpty(), "История не пустая.");
     }
 }
