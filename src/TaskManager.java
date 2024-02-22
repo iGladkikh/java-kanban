@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Map;
 
 public interface TaskManager {
@@ -43,4 +44,8 @@ public interface TaskManager {
     void clearTasks();
 
     void clearAllData();
+
+    List<Task> getHistory();
+
+    void clearHistory();
 }
