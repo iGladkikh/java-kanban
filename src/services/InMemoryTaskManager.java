@@ -1,6 +1,9 @@
 package services;
 
-import tasks.*;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.*;
 
@@ -81,6 +84,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeEpic(int id) {
         clearEpicSubtasks(id);
         epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -142,6 +146,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.removeSubtask(id);
         calculateEpicStatus(epic);
         subtasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -150,6 +155,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(id);
             for (int subtaskId : epic.getSubtasks()) {
                 subtasks.remove(subtaskId);
+                historyManager.remove(subtaskId);
             }
             epic.clearSubtasks();
             epic.setStatus(Status.NEW);
@@ -197,6 +203,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(int id) {
         tasks.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
