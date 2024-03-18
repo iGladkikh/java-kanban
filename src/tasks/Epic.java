@@ -1,3 +1,5 @@
+package tasks;
+
 import java.util.HashSet;
 
 public class Epic extends Task {
@@ -26,7 +28,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "tasks.Epic{" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +

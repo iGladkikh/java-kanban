@@ -1,3 +1,7 @@
+package services;
+
+import tasks.*;
+
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -168,7 +172,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public int addTask(Task task) {
-        if (isTaskContains(task) || !task.getClass().getSimpleName().equals("Task")) return -1;
+        if (isTaskContains(task) || task.getClass() != Task.class) return -1;
 
         int taskId = task.getId();
         tasks.putIfAbsent(taskId, task);
