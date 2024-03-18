@@ -23,6 +23,13 @@ public class Task {
         this.status = status;
     }
 
+    Task(Task task) {
+        this.id = task.getId();
+        this.name = task.getName();
+        this.description = task.getDescription();
+        this.status = task.getStatus();
+    }
+
     private static int getNextId() {
         return ++totalTasksCount;
     }
@@ -76,5 +83,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public Task copy() {
+        return new Task(this);
     }
 }

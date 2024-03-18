@@ -51,7 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Map<Integer, Epic> getEpics() {
-        return epics;
+        return Map.copyOf(epics);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskContains(epic)) return -1;
 
         int epicId = epic.getId();
-        epics.put(epicId, epic);
+        epics.put(epicId, epic.copy());
         return epicId;
     }
 
@@ -67,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpic(int id) {
         Epic epic = epics.get(id);
         historyManager.add(epic);
-        return epic;
+        return epic.copy();
     }
 
     @Override
@@ -98,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
         Map<Integer, Subtask> result = new HashMap<>();
         if (epics.containsKey(epicId)) {
             for (int subtaskId : epics.get(epicId).getSubtasks()) {
-                result.put(subtaskId, subtasks.get(subtaskId));
+                result.put(subtaskId, subtasks.get(subtaskId).copy());
             }
         }
         return result;
@@ -106,7 +106,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Map<Integer, Subtask> getSubtasks() {
-        return subtasks;
+        return Map.copyOf(subtasks);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(epicId);
             int subtaskId = subtask.getId();
             epic.addSubtask(subtaskId);
-            subtasks.put(subtaskId, subtask);
+            subtasks.put(subtaskId, subtask.copy());
             calculateEpicStatus(epic);
             return subtaskId;
         }
@@ -127,14 +127,14 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         historyManager.add(subtask);
-        return subtask;
+        return subtask.copy();
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         int id = subtask.getId();
         if (subtasks.containsKey(id)) {
-            subtasks.put(id, subtask);
+            subtasks.put(id, subtask.copy());
             calculateEpicStatus(epics.get(subtask.getEpicId()));
         }
     }
@@ -173,7 +173,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Map<Integer, Task> getTasks() {
-        return tasks;
+        return Map.copyOf(tasks);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskContains(task) || task.getClass() != Task.class) return -1;
 
         int taskId = task.getId();
-        tasks.putIfAbsent(taskId, task);
+        tasks.putIfAbsent(taskId, task.copy());
         return taskId;
     }
 
@@ -189,14 +189,14 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTask(int id) {
         Task task = tasks.get(id);
         historyManager.add(task);
-        return task;
+        return task.copy();
     }
 
     @Override
     public void updateTask(Task task) {
         int id = task.getId();
         if (tasks.containsKey(id)) {
-            tasks.put(id, task);
+            tasks.put(id, task.copy());
         }
     }
 

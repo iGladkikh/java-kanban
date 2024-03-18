@@ -100,4 +100,17 @@ class InMemoryTaskManagerTest {
         assertTrue(taskManager.getEpics().isEmpty(), "Не пусто.");
         assertTrue(taskManager.getSubtasks().isEmpty(), "Не пусто.");
     }
+
+    @Test
+    void notChangesInManagerAfterAdd() {
+        lastTask.setName("New task");
+        assertNotEquals(lastTask.getName(), taskManager.getTask(lastTask.getId()).getName());
+    }
+
+    @Test
+    void notChangesInManagerAfterGet() {
+        Task task = taskManager.getTask(lastTask.getId());
+        task.setName("New task");
+        assertNotEquals(task.getName(), taskManager.getTask(lastTask.getId()).getName());
+    }
 }

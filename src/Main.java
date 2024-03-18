@@ -18,6 +18,7 @@ public class Main {
                 System.out.println("\t--> " + task);
             }
         }
+
         System.out.println("\nПодзадачи:");
         for (Task subtask : manager.getSubtasks().values()) {
             System.out.println(subtask);
@@ -63,11 +64,20 @@ public class Main {
         int epic2 = manager.addEpic(new Epic("Важный эпик 2", "Описание Эпика2"));
         int subtask21 = manager.addSubtask(new Subtask("Задача1", "", Status.DONE, epic2));
         int subtask22 = manager.addSubtask(new Subtask("Задача2", "", Status.DONE, epic2));
-        manager.getEpic(epic2);
-        manager.getEpic(epic2);
+
+//        manager.getEpic(epic2);
+//        manager.getEpic(epic2);
         //manager.removeEpic(epic2);
         //manager.clearAllSubtasks();
         //manager.clearAllData();
+
+        manager.getTask(singleTask3.getId());
+        manager.getSubtask(subtask22);
+        manager.getSubtask(subtask21);
+        manager.getEpic(epic2);
+        manager.getTask(singleTask3.getId());
+        manager.getEpic(epic2);
+        manager.removeEpic(epic2);
 
         printAllTasks(manager);
     }
