@@ -59,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskContains(epic)) return -1;
 
         int epicId = epic.getId();
-        epics.put(epicId, epic.copy());
+        epics.put(epicId, epic);
         return epicId;
     }
 
@@ -67,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic getEpic(int id) {
         Epic epic = epics.get(id);
         historyManager.add(epic);
-        return epic.copy();
+        return epic;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
         Map<Integer, Subtask> result = new HashMap<>();
         if (epics.containsKey(epicId)) {
             for (int subtaskId : epics.get(epicId).getSubtasks()) {
-                result.put(subtaskId, subtasks.get(subtaskId).copy());
+                result.put(subtaskId, subtasks.get(subtaskId));
             }
         }
         return result;
@@ -116,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(epicId);
             int subtaskId = subtask.getId();
             epic.addSubtask(subtaskId);
-            subtasks.put(subtaskId, subtask.copy());
+            subtasks.put(subtaskId, subtask);
             calculateEpicStatus(epic);
             return subtaskId;
         }
@@ -127,14 +127,14 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         historyManager.add(subtask);
-        return subtask.copy();
+        return subtask;
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
         int id = subtask.getId();
         if (subtasks.containsKey(id)) {
-            subtasks.put(id, subtask.copy());
+            subtasks.put(id, subtask);
             calculateEpicStatus(epics.get(subtask.getEpicId()));
         }
     }
@@ -181,7 +181,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (isTaskContains(task) || task.getClass() != Task.class) return -1;
 
         int taskId = task.getId();
-        tasks.putIfAbsent(taskId, task.copy());
+        tasks.putIfAbsent(taskId, task);
         return taskId;
     }
 
@@ -189,14 +189,14 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTask(int id) {
         Task task = tasks.get(id);
         historyManager.add(task);
-        return task.copy();
+        return task;
     }
 
     @Override
     public void updateTask(Task task) {
         int id = task.getId();
         if (tasks.containsKey(id)) {
-            tasks.put(id, task.copy());
+            tasks.put(id, task);
         }
     }
 
