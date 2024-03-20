@@ -61,10 +61,10 @@ class InMemoryHistoryManagerTest {
         taskManager.getTask(lastTask.getId());
         taskManager.getEpic(lastEpic.getId());
         taskManager.getSubtask(lastSubtask.getId());
-        assertEquals(lastSubtask.getId(), taskManager.getHistory().getFirst().getId(), "Неверный id элемента.");
+        assertEquals(lastSubtask.getId(), taskManager.getHistory().getLast().getId(), "Неверный id элемента.");
 
         taskManager.getTask(lastTask.getId());
-        assertEquals(lastTask.getId(), taskManager.getHistory().getFirst().getId(), "Неверный id элемента.");
+        assertEquals(lastTask.getId(), taskManager.getHistory().getLast().getId(), "Неверный id элемента.");
     }
 
     @Test
