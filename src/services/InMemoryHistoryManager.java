@@ -41,16 +41,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        if (first == null) {
-            return new ArrayList<>();
-        }
-
         ArrayList<Task> result = new ArrayList<>(history.size());
-        Node node = first;
-        result.add(node.data);
-        while (node.hasNext()) {
-            result.add(node.next.data);
-            node = node.next;
+        Node tmp = first;
+        while (tmp != null) {
+            result.add(tmp.data);
+            tmp = tmp.next;
         }
         return result;
     }
