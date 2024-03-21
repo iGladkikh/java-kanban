@@ -10,6 +10,11 @@ public class Epic extends Task {
         this.subtasks = new HashSet<>();
     }
 
+    private Epic(Epic task) {
+        super(task);
+        this.subtasks = task.getSubtasks();
+    }
+
     public void addSubtask(int id) {
         subtasks.add(id);
     }
@@ -35,5 +40,9 @@ public class Epic extends Task {
                 ", status=" + getStatus() +
                 ", subtaskCount=" + subtasks.size() +
                 '}';
+    }
+
+    public Epic copy() {
+        return new Epic(this);
     }
 }
