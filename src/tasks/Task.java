@@ -23,6 +23,13 @@ public class Task {
         this.status = status;
     }
 
+    public Task(int id, String name, String description, Status status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     Task(Task task) {
         this.id = task.getId();
         this.name = task.getName();
@@ -32,6 +39,11 @@ public class Task {
 
     private static int getNextId() {
         return ++totalTasksCount;
+    }
+
+    public static Task createFromString(String value, String fieldDelimiter) {
+        String[] data = value.split(fieldDelimiter);
+        return new Task(Integer.parseInt(data[0]), data[1], data[2], Status.valueOf(data[3]));
     }
 
     public int getId() {
@@ -83,6 +95,11 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String toSaveString(String delimiter) {
+        return String.join(delimiter,
+                new String[]{Type.TASK.toString(), String.valueOf(id), name, description, String.valueOf(status)});
     }
 
     public Task copy() {
