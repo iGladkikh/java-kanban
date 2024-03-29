@@ -94,4 +94,17 @@ class FileBackedTaskManagerTest {
 
         assertEquals(1, history.size(), "Неверное количество элементов.");
     }
+
+    @Test
+    public void checkNextTaskIdAfterCreatingFromString() {
+        String taskString = "100,Прочитать новости,,NEW";
+        Task createdFromStringTask = Task.createFromString(taskString, ",");
+        int createdFromStringTaskId = createdFromStringTask.getId();
+
+        Task nextTask = new Task("Выпить кофе", "");
+        int nextTaskId = nextTask.getId();
+
+        assertTrue(nextTaskId > createdFromStringTaskId);
+        assertEquals(1, nextTaskId - createdFromStringTaskId);
+    }
 }

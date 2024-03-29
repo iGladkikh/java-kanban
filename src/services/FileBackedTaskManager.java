@@ -3,7 +3,10 @@ package services;
 import exceptions.ManagerFileCreateException;
 import exceptions.ManagerLoadException;
 import exceptions.ManagerSaveException;
-import tasks.*;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.Type;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -41,14 +44,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         System.out.println(manager.getTasks());
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) {
+    static FileBackedTaskManager loadFromFile(File file) {
         if (Files.exists(file.toPath())) {
             return new FileBackedTaskManager(Managers.getDefaultHistoryManager(), file);
         }
         throw new ManagerLoadException("Файл '" + file + "' отсутствует.");
     }
 
-    public static String historyToString(HistoryManager manager) {
+    static String historyToString(HistoryManager manager) {
         List<Task> tasks = manager.getHistory();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tasks.size(); i++) {
@@ -60,7 +63,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return sb.toString();
     }
 
-    public static List<Integer> historyFromString(String value) {
+    static List<Integer> historyFromString(String value) {
         String[] ids = value.split(DATA_FILE_DELIMITER);
         List<Integer> res = new ArrayList<>(ids.length);
         for (String id : ids) {
@@ -96,15 +99,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
                     if (epicType.equals(startWorld)) {
                         Epic epic = Epic.createFromString(taskData, DATA_FILE_DELIMITER);
-                        addEpic(epic);
+                        super.addEpic(epic);
                         loadedTasks.put(epic.getId(), epic);
                     } else if (subtaskType.equals(startWorld)) {
                         Subtask subtask = Subtask.createFromString(taskData, DATA_FILE_DELIMITER);
-                        addSubtask(subtask);
+                        super.addSubtask(subtask);
                         loadedTasks.put(subtask.getId(), subtask);
                     } else if (taskType.equals(startWorld)) {
                         Task task = Task.createFromString(taskData, DATA_FILE_DELIMITER);
-                        addTask(task);
+                        super.addTask(task);
                         loadedTasks.put(task.getId(), task);
                     } else {
                         loadedHistory.addAll(historyFromString(sb.toString()));

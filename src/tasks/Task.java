@@ -28,6 +28,10 @@ public class Task {
         this.name = name;
         this.description = description;
         this.status = status;
+
+        if (id > totalTasksCount) {
+            totalTasksCount = id;
+        }
     }
 
     Task(Task task) {
