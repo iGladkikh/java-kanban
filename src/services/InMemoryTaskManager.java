@@ -130,17 +130,19 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public int addSubtask(Subtask subtask) {
         int epicId = subtask.getEpicId();
-        if (epics.containsKey(epicId) && !isTaskContains(subtask)) {
+        if (epics.containsKey(epicId) && !isTaskContains(subtask) &&
+                (!subtask.isPrioritized() || !isIntersectedTask(subtask))) {
             Epic epic = epics.get(epicId);
             int subtaskId = subtask.getId();
             epic.addSubtask(subtaskId);
             subtasks.put(subtaskId, subtask);
             computeEpicFields(epic);
-            if (subtask.isPrioritized() && !isIntersectedTask(subtask)) {
+            if (subtask.isPrioritized()) {
                 prioritizedTasks.add(subtask);
             }
             return subtaskId;
         }
+
         return -1;
     }
 
