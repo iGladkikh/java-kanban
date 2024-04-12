@@ -1,10 +1,13 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Epic extends Task {
     private final Set<Integer> subtasks;
+    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -12,18 +15,35 @@ public class Epic extends Task {
     }
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, Status.NEW);
+        super(id, name, description);
         this.subtasks = new HashSet<>();
     }
 
-    private Epic(Epic task) {
-        super(task);
-        this.subtasks = task.getSubtasks();
+    public static Epic createFromString(String value, String fieldDelimiter) {
+        Task task = Task.createFromString(value, fieldDelimiter);
+        return new Epic(
+                task.getId(),
+                task.getName(),
+                task.getDescription()
+        );
     }
 
-    public static Epic createFromString(String value, String fieldDelimiter) {
-        String[] data = value.split(fieldDelimiter);
-        return new Epic(Integer.parseInt(data[0]), data[1], data[2]);
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    @Override
+    public Duration getDuration() {
+        try {
+            return Duration.between(getStartTime(), getEndTime());
+        } catch (NullPointerException e) {
+            return Duration.ZERO;
+        }
     }
 
     public void addSubtask(int id) {
@@ -44,24 +64,21 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "tasks.Epic{" +
+        return "Epic{" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
+                ", starTime='" + (getStartTime() != null ? getStartTime().format(DATE_TIME_FORMATTER) : "") + '\'' +
+                ", endTime='" + (getEndTime() != null ? getEndTime().format(DATE_TIME_FORMATTER) : "") + '\'' +
+                ", duration=" + (getDuration() != null ? getDuration().toMinutes() : 0) +
                 ", subtaskCount=" + subtasks.size() +
                 '}';
     }
 
     @Override
     public String toSaveString(String delimiter) {
-        return String.join(delimiter, new String[]{
-                Type.EPIC.toString(), String.valueOf(getId()), getName(), getDescription()
-        });
-    }
-
-    @Override
-    public Epic copy() {
-        return new Epic(this);
+        String[] s = new String[]{Type.EPIC.toString(), String.valueOf(getId()), getName(), getDescription()};
+        return String.join(delimiter, s);
     }
 }
