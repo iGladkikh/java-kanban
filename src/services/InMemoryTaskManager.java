@@ -21,7 +21,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subtasks = new HashMap<>();
-        prioritizedTasks = new TreeSet<>();
+        prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
         this.historyManager = historyManager;
     }
 
@@ -267,6 +267,7 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.clear();
         Stream.concat(getTasks().values().stream(), getSubtasks().values().stream())
                 .filter(Task::isPrioritized)
+                .sorted(Comparator.comparing(Task::getStartTime))
                 .forEach(prioritizedTasks::add);
     }
 

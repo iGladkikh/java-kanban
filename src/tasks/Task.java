@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class Task implements Comparable<Task> {
+public class Task {
     protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static int totalTasksCount = 0;
     private final int id;
@@ -187,10 +187,5 @@ public class Task implements Comparable<Task> {
         } catch (NullPointerException e) {
             return null;
         }
-    }
-
-    @Override
-    public int compareTo(Task o) {
-        return startTime.compareTo(o.startTime);
     }
 }
