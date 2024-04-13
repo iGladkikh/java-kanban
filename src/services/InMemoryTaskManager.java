@@ -279,11 +279,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public boolean isIntersectedTask(Task task) {
         if (!task.isPrioritized()) return false;
-        Optional<Task> availableTask = prioritizedTasks.stream()
-                .filter(t -> t.getStartTime().equals(task.getStartTime()) ||
+        return prioritizedTasks.stream()
+                .anyMatch(t -> t.getStartTime().equals(task.getStartTime()) ||
                         (t.getStartTime().isBefore(task.getEndTime()) &&
-                                t.getEndTime().isAfter(task.getStartTime())))
-                .findFirst();
-        return availableTask.isPresent();
+                                t.getEndTime().isAfter(task.getStartTime())));
     }
 }
