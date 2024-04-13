@@ -145,8 +145,8 @@ public class Task {
         this.startTime = startTime;
     }
 
-    public boolean isPrioritized() {
-        return getStartTime() != null && getEndTime() != null;
+    public void setDuration(Duration duration) {
+        this.duration = duration;
     }
 
     @Override
@@ -182,10 +182,6 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        try {
-            return startTime.plus(duration);
-        } catch (NullPointerException e) {
-            return null;
-        }
+        return startTime != null && duration != null ? startTime.plus(duration) : null;
     }
 }

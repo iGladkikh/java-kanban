@@ -1,13 +1,10 @@
 package tasks;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Epic extends Task {
     private final Set<Integer> subtasks;
-    private LocalDateTime endTime;
 
     public Epic(String name, String description) {
         super(name, description);
@@ -26,24 +23,6 @@ public class Epic extends Task {
                 task.getName(),
                 task.getDescription()
         );
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    @Override
-    public Duration getDuration() {
-        try {
-            return Duration.between(getStartTime(), getEndTime());
-        } catch (NullPointerException e) {
-            return Duration.ZERO;
-        }
     }
 
     public void addSubtask(int id) {
