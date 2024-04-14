@@ -15,7 +15,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks;
     private final Map<Integer, Epic> epics;
     private final Map<Integer, Subtask> subtasks;
-    private final Set<Task> prioritizedTasks;
+    private final SortedSet<Task> prioritizedTasks;
     protected final HistoryManager historyManager;
 
     InMemoryTaskManager(HistoryManager historyManager) {
@@ -34,22 +34,27 @@ public class InMemoryTaskManager implements TaskManager {
     private void computeEpicFields(Epic epic) {
         Set<Integer> epicSubtasks = epic.getSubtasks();
         Set<Status> subtasksStatuses = new HashSet<>();
-        Set<LocalDateTime> subtasksDates = new TreeSet<>();
+        SortedSet<LocalDateTime> subtasksDates = new TreeSet<>();
+        Duration subtasksDuration = Duration.ZERO;
         for (int subtaskId : epicSubtasks) {
             Subtask subtask = subtasks.get(subtaskId);
             subtasksStatuses.add(subtask.getStatus());
             LocalDateTime startTime = subtask.getStartTime();
-            if (startTime != null) {
-                subtasksDates.add(startTime);
-            }
             LocalDateTime endTime = subtask.getEndTime();
-            if (startTime != null) {
+
+            if (startTime != null && endTime != null) {
+                subtasksDates.add(startTime);
                 subtasksDates.add(endTime);
+                subtasksDuration = subtasksDuration.plus(subtask.getDuration());
             }
         }
 
+        if (!subtasksDates.isEmpty()) {
+            epic.setStartTime(subtasksDates.first());
+            epic.setEndTime(subtasksDates.last());
+            epic.setDuration(subtasksDuration);
+        }
         setEpicStatus(epic, subtasksStatuses);
-        setEpicPriority(epic, subtasksDates);
     }
 
     private void setEpicStatus(Epic epic, Set<Status> subtasksStatuses) {
@@ -61,13 +66,6 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setStatus(Status.IN_PROGRESS);
         }
-    }
-
-    private void setEpicPriority(Epic epic, Set<LocalDateTime> sortedDates) {
-        if (sortedDates.isEmpty()) return;
-        List<LocalDateTime> dates = List.copyOf(sortedDates);
-        epic.setStartTime(dates.getFirst());
-        epic.setDuration(Duration.between(dates.getFirst(), dates.getLast()));
     }
 
     @Override
@@ -267,7 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Set<Task> getPrioritizedTasks() {
+    public SortedSet<Task> getPrioritizedTasks() {
         return prioritizedTasks;
     }
 

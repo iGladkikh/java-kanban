@@ -110,4 +110,49 @@ abstract class TaskManagerTest<T extends TaskManager> {
                     .isBefore(prioritizedTasks.get(i).getStartTime()));
         }
     }
+
+    @Test
+    public void epicStarTimeShouldBeEqualsToEarliestSubtaskStartTime() {
+        String firstStartTime = "15.04.2024 18:25";
+        String lastStartTime = "21.06.2024 11:50";
+
+        Epic epic = new Epic("Epic", "");
+        Subtask firstSubtask = new Subtask("Subtask1", "", "DONE", firstStartTime, 60, epic.getId());
+        Subtask lastSubtask = new Subtask("Subtask2", "", "IN_PROGRESS", lastStartTime, 10, epic.getId());
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(firstSubtask);
+        taskManager.addSubtask(lastSubtask);
+
+        assertEquals(epic.getStartTime(), firstSubtask.getStartTime());
+    }
+
+    @Test
+    public void epicEndTimeShouldBeEqualsToLatestSubtaskEndTime() {
+        String firstStartTime = "18.03.2024 23:00";
+        String lastStartTime = "28.07.2024 13:30";
+
+        Epic epic = new Epic("Epic", "");
+        Subtask firstSubtask = new Subtask("Subtask1", "", "DONE", firstStartTime, 60, epic.getId());
+        Subtask lastSubtask = new Subtask("Subtask2", "", "IN_PROGRESS", lastStartTime, 10, epic.getId());
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(firstSubtask);
+        taskManager.addSubtask(lastSubtask);
+
+        assertEquals(epic.getEndTime(), lastSubtask.getEndTime());
+    }
+
+    @Test
+    public void epicDurationShouldBeEqualsToSumOfAllSubtasksDurations() {
+        String firstStartTime = "09.01.2024 03:20";
+        String lastStartTime = "22.03.2024 15:30";
+
+        Epic epic = new Epic("Epic", "");
+        Subtask firstSubtask = new Subtask("Subtask1", "", "DONE", firstStartTime, 60, epic.getId());
+        Subtask lastSubtask = new Subtask("Subtask2", "", "IN_PROGRESS", lastStartTime, 10, epic.getId());
+        taskManager.addEpic(epic);
+        taskManager.addSubtask(firstSubtask);
+        taskManager.addSubtask(lastSubtask);
+
+        assertEquals(epic.getDuration(), firstSubtask.getDuration().plus(lastSubtask.getDuration()));
+    }
 }
