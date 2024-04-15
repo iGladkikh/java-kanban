@@ -18,8 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.System.getProperty;
+import static java.lang.System.out;
+
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String[] DATA_FILE_HEADERS = new String[]{"type", "id", "name", "description", "status", "epic"};
+    private static final String[] DATA_FILE_HEADERS = new String[]{"type", "id", "name", "description", "status",
+            "start_time", "duration", "epic"};
     private static final Charset DATA_FILE_CHARSET = StandardCharsets.UTF_8;
     private static final String DATA_FILE_DELIMITER = ",";
     private final File dataFile;
@@ -35,13 +39,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public static void main(String[] args) {
-        String dataFileDirectory = Paths.get(System.getProperty("user.dir"), "data").toString();
+        String dataFileDirectory = Paths.get(getProperty("user.dir"), "data").toString();
         String testManagerDataFile = "testManagerData.csv";
         TaskManager manager = FileBackedTaskManager.loadFromFile(Paths.get(dataFileDirectory, testManagerDataFile).toFile());
 
-        System.out.println(manager.getEpics());
-        System.out.println(manager.getSubtasks());
-        System.out.println(manager.getTasks());
+        out.println(manager.getEpics());
+        out.println(manager.getSubtasks());
+        out.println(manager.getTasks());
+        out.println(manager.getPrioritizedTasks());
     }
 
     static FileBackedTaskManager loadFromFile(File file) {

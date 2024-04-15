@@ -1,11 +1,11 @@
-type,id,name,description,status,epic
-EPIC,8,Важный эпик 2,Описание Эпика2
-EPIC,4,Переезд,Описание Эпика1
-SUBTASK,5,Собрать коробки,,NEW,4
-SUBTASK,6,Упаковать кошку,,IN_PROGRESS,4
-SUBTASK,7,Сказать прощальные слова,,NEW,4
-SUBTASK,9,Задача1,,DONE,8
-SUBTASK,10,Задача2,,DONE,8
+type,id,name,description,status,start_time,duration,epic
+EPIC,8,Важный эпик 2,Описание Эпика2,NEW
+EPIC,4,Переезд,Описание Эпика1,NEW
+SUBTASK,5,Собрать коробки,,NEW,,,4
+SUBTASK,6,Упаковать кошку,,IN_PROGRESS,,,4
+SUBTASK,7,Сказать прощальные слова,,NEW,,,4
+SUBTASK,9,Задача1,,DONE,,,8
+SUBTASK,10,Задача2,,DONE,,,8
 TASK,1,Сходить за грибами,Выйти не позднее 7.00,NEW
 TASK,2,Купить билеты для отпуска,,NEW
 TASK,3,Сходить в театр,,NEW

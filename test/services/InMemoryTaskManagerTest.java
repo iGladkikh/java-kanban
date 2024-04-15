@@ -1,5 +1,6 @@
 package services;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -9,11 +10,15 @@ import tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
-    final TaskManager taskManager = Managers.getDefaultTaskManager();
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+    //TaskManager taskManager = Managers.getDefaultTaskManager();
     static Task lastTask;
     static Task lastEpic;
     static Task lastSubtask;
+
+    InMemoryTaskManagerTest() {
+        super.taskManager = new InMemoryTaskManager(Managers.getDefaultHistoryManager());
+    }
 
     @BeforeEach
     public void addTasks() {

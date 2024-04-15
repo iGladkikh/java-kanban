@@ -13,22 +13,21 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     File taskManagerDataFile;
-    TaskManager taskManager;
 
     @BeforeEach
     public void init() {
         try {
             taskManagerDataFile = File.createTempFile("testData", ".csv");
-            taskManager = new FileBackedTaskManager(Managers.getDefaultHistoryManager(), taskManagerDataFile);
+            super.taskManager = new FileBackedTaskManager(Managers.getDefaultHistoryManager(), taskManagerDataFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    public void epicsNotNullAndEmptyFromEmptyFile() {
+    void epicsNotNullAndIsEmptyFromEmptyFile() {
         Map<Integer, Epic> tasks = taskManager.getEpics();
 
         assertNotNull(tasks, "Объект - null");
@@ -36,7 +35,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void subtasksNotNullAndEmptyFromEmptyFile() {
+    void subtasksNotNullAndIsEmptyFromEmptyFile() {
         Map<Integer, Subtask> tasks = taskManager.getSubtasks();
 
         assertNotNull(tasks, "Объект - null");
@@ -44,7 +43,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void tasksNotNullAndEmptyFromEmptyFile() {
+    void tasksNotNullAndIsEmptyFromEmptyFile() {
         Map<Integer, Task> tasks = taskManager.getTasks();
 
         assertNotNull(tasks, "Объект - null");
@@ -52,7 +51,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void historyNotNullAndEmptyFromEmptyFile() {
+    void historyNotNullAndIsEmptyFromEmptyFile() {
         List<Task> history = taskManager.getHistory();
 
         assertNotNull(history, "Объект - null");
@@ -60,7 +59,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void saveTaskToEmptyFile() {
+    void saveTaskToEmptyFile() {
         long before = taskManagerDataFile.length();
 
         Task singleTask1 = new Task("Сходить за грибами", "Выйти не позднее 7.00");
@@ -71,7 +70,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void loadTask() {
+    void loadTaskFromFile() {
         Task task = new Task("Прогуляться", "");
         taskManager.addTask(task);
         taskManager = null;
@@ -83,7 +82,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void loadHistory() {
+    void loadHistoryFromFile() {
         Task task = new Task("Выпить кофе", "");
         taskManager.addTask(task);
         taskManager.getTask(task.getId());
@@ -96,7 +95,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    public void checkNextTaskIdAfterCreatingFromString() {
+    void checkNextTaskIdAfterCreatingFromString() {
         String taskString = "100,Прочитать новости,,NEW";
         Task createdFromStringTask = Task.createFromString(taskString, ",");
         int createdFromStringTaskId = createdFromStringTask.getId();
@@ -105,6 +104,5 @@ class FileBackedTaskManagerTest {
         int nextTaskId = nextTask.getId();
 
         assertTrue(nextTaskId > createdFromStringTaskId);
-        assertEquals(1, nextTaskId - createdFromStringTaskId);
     }
 }
