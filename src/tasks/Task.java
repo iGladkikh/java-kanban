@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
-    protected static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private static int totalTasksCount = 0;
     private final int id;
     private String name;
@@ -14,6 +14,13 @@ public class Task {
     private Status status;
     private LocalDateTime startTime;
     private Duration duration;
+
+    public Task(String name) {
+        this.id = getNextId();
+        this.name = name;
+        this.description = "";
+        this.status = Status.NEW;
+    }
 
     public Task(String name, String description) {
         this.id = getNextId();
@@ -63,14 +70,28 @@ public class Task {
             String name,
             String description,
             String status,
-            String starTime,
+            String startTime,
             int duration) {
         this.id = getNextId();
         this.name = name;
         this.description = description;
         this.status = Status.valueOf(status);
-        this.startTime = LocalDateTime.parse(starTime, DATE_TIME_FORMATTER);
+        this.startTime = LocalDateTime.parse(startTime, DATE_TIME_FORMATTER);
         this.duration = Duration.ofMinutes(duration);
+    }
+
+    public Task(
+            String name,
+            String description,
+            Status status,
+            LocalDateTime startTime,
+            Duration duration) {
+        this.id = getNextId();
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     private static int getNextId() {
@@ -149,6 +170,11 @@ public class Task {
         this.duration = duration;
     }
 
+    public static Task cloneWithNextId(Task task) {
+        return new Task(task.getName(), task.getDescription(), task.getStatus(),
+                task.getStartTime(), task.getDuration());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -177,7 +203,8 @@ public class Task {
     public String toSaveString(String delimiter) {
         String starTimeString = startTime != null ? startTime.format(DATE_TIME_FORMATTER) : "";
         String durationString = duration != null ? String.valueOf(duration.toMinutes()) : "";
-        String[] s = new String[]{Type.TASK.toString(), String.valueOf(id), name, description, String.valueOf(status), starTimeString, durationString};
+        String[] s = new String[]{Type.TASK.toString(), String.valueOf(id), name, description,
+                String.valueOf(status), starTimeString, durationString};
         return String.join(delimiter, s);
     }
 

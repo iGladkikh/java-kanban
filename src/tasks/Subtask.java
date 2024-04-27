@@ -23,6 +23,17 @@ public class Subtask extends Task {
     }
 
     public Subtask(
+            String name,
+            String description,
+            Status status,
+            LocalDateTime startTime,
+            Duration duration,
+            int epicId) {
+        super(name, description, status, startTime, duration);
+        this.epicId = epicId;
+    }
+
+    public Subtask(
             int id,
             String name,
             String description,
@@ -56,6 +67,12 @@ public class Subtask extends Task {
         return epicId;
     }
 
+    public static Subtask cloneWithNextId(Subtask subtask) {
+        return new Subtask(subtask.getName(), subtask.getDescription(),
+                subtask.getStatus(), subtask.getStartTime(),
+                subtask.getDuration(), subtask.getEpicId());
+    }
+
     @Override
     public String toString() {
         return "Subtask{" +
@@ -71,10 +88,10 @@ public class Subtask extends Task {
 
     @Override
     public String toSaveString(String delimiter) {
-        return super.toSaveString(delimiter) + "," + getEpicId();
-//        return String.join(delimiter, new String[]{
-//                Type.SUBTASK.toString(), String.valueOf(getId()), getName(), getDescription(),
-//                String.valueOf(getStatus()), String.valueOf(getEpicId())
-//        });
+        String starTimeString = getStartTime() != null ? getStartTime().format(DATE_TIME_FORMATTER) : "";
+        String durationString = getDuration() != null ? String.valueOf(getDuration().toMinutes()) : "";
+        String[] data = new String[]{Type.SUBTASK.toString(), String.valueOf(getId()), getName(), getDescription(),
+                String.valueOf(getStatus()), starTimeString, durationString, String.valueOf(getEpicId())};
+        return String.join(delimiter, data);
     }
 }

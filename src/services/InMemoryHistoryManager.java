@@ -16,6 +16,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
+    public void clear() {
+        this.first = null;
+        this.last = null;
+        history.clear();
+    }
+
+    @Override
     public void add(Task task) {
         int id = task.getId();
         remove(id);
