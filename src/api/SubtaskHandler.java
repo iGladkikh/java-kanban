@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class SubtaskHandler extends TaskHandler {
-    static final String PATH = "subtasks";
+    static final String PATH_NAME = "subtasks";
 
     SubtaskHandler(TaskManager taskManager) {
         super(taskManager);
@@ -17,7 +17,7 @@ public class SubtaskHandler extends TaskHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange, PATH);
+        Endpoint endpoint = getEndpoint(exchange, PATH_NAME);
         handleExecute(exchange, endpoint);
     }
 
@@ -32,7 +32,7 @@ public class SubtaskHandler extends TaskHandler {
         try {
             int subtaskId = parseTaskIdFromUri(exchange);
             if (taskManager.getSubtasks().containsKey(subtaskId)) {
-                String body = gson.toJson(taskManager.getSubtask(parseTaskIdFromUri(exchange)));
+                String body = gson.toJson(taskManager.getSubtask(subtaskId));
                 sendResponse(exchange, body, 200);
             } else {
                 sendResponse(exchange, 404);
@@ -47,8 +47,17 @@ public class SubtaskHandler extends TaskHandler {
         try {
             JsonObject jsonObject = getJsonObjectFromRequestBody(exchange);
             Subtask subtask = Subtask.cloneWithNextId(gson.fromJson(jsonObject, Subtask.class));
-            taskManager.addSubtask(subtask);
-            sendResponse(exchange, 201);
+
+            if (taskManager.getEpics().containsKey(subtask.getEpicId())) {
+                if (taskManager.isIntersectedTask(subtask)) {
+                    sendResponse(exchange, 406);
+                } else {
+                    taskManager.addSubtask(subtask);
+                    sendResponse(exchange, 201);
+                }
+            } else {
+                sendResponse(exchange, 404);
+            }
         } catch (Exception e) {
             sendResponse(exchange, 500);
         }

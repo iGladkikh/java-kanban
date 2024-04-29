@@ -6,7 +6,7 @@ import services.TaskManager;
 import java.io.IOException;
 
 public class HistoryHandler extends Handler {
-    static final String PATH = "history";
+    static final String PATH_NAME = "history";
 
     HistoryHandler(TaskManager taskManager) {
         super(taskManager);
@@ -14,13 +14,14 @@ public class HistoryHandler extends Handler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String requestPath = exchange.getRequestURI().getPath();
-        String[] pathParts = requestPath.split("/", -1);
+        String[] pathParts = getRequestPathParts(exchange);
         String requestMethod = exchange.getRequestMethod();
 
-        if (pathParts.length == 2 && requestMethod.equals("GET") && PATH.equals(pathParts[1])) {
+        if (pathParts.length == 2 && requestMethod.equals("GET") && PATH_NAME.equals(pathParts[1])) {
             String body = gson.toJson(taskManager.getHistory());
             sendResponse(exchange, body, 200);
+        } else {
+            sendResponse(exchange, 500);
         }
     }
 }

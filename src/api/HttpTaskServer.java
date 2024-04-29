@@ -27,11 +27,11 @@ public class HttpTaskServer {
     public HttpTaskServer(int port, TaskManager taskManager) {
         try {
             this.httpServer = HttpServer.create(new InetSocketAddress(port), 0);
-            httpServer.createContext("/" + TaskHandler.PATH, new TaskHandler(taskManager));
-            httpServer.createContext("/" + EpicHandler.PATH, new EpicHandler(taskManager));
-            httpServer.createContext("/" + SubtaskHandler.PATH, new SubtaskHandler(taskManager));
-            httpServer.createContext("/" + HistoryHandler.PATH, new HistoryHandler(taskManager));
-            httpServer.createContext("/" + PrioritizedHandler.PATH, new PrioritizedHandler(taskManager));
+            httpServer.createContext("/" + TaskHandler.PATH_NAME, new TaskHandler(taskManager));
+            httpServer.createContext("/" + EpicHandler.PATH_NAME, new EpicHandler(taskManager));
+            httpServer.createContext("/" + SubtaskHandler.PATH_NAME, new SubtaskHandler(taskManager));
+            httpServer.createContext("/" + HistoryHandler.PATH_NAME, new HistoryHandler(taskManager));
+            httpServer.createContext("/" + PrioritizedHandler.PATH_NAME, new PrioritizedHandler(taskManager));
         } catch (IOException e) {
             throw new RuntimeException("Ошибка запуска HTTP-сервера на " + port + " порту.");
         }

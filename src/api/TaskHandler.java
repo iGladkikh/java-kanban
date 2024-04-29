@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.List;
 
 public class TaskHandler extends Handler {
-    static final String PATH = "tasks";
+    static final String PATH_NAME = "tasks";
 
     TaskHandler(TaskManager taskManager) {
         super(taskManager);
@@ -21,7 +21,7 @@ public class TaskHandler extends Handler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange, PATH);
+        Endpoint endpoint = getEndpoint(exchange, PATH_NAME);
         handleExecute(exchange, endpoint);
     }
 
@@ -48,8 +48,7 @@ public class TaskHandler extends Handler {
     }
 
     protected Endpoint getEndpoint(HttpExchange exchange, String path) throws IOException {
-        String requestPath = exchange.getRequestURI().getPath();
-        String[] pathParts = requestPath.split("/", -1);
+        String[] pathParts = getRequestPathParts(exchange);
 
         if (pathParts.length < 2 || !path.equals(pathParts[1])) {
             return Endpoint.UNKNOWN;
@@ -88,7 +87,7 @@ public class TaskHandler extends Handler {
         try {
             int taskId = parseTaskIdFromUri(exchange);
             if (taskManager.getTasks().containsKey(taskId)) {
-                String body = gson.toJson(taskManager.getTask(parseTaskIdFromUri(exchange)));
+                String body = gson.toJson(taskManager.getTask(taskId));
                 sendResponse(exchange, body, 200);
             } else {
                 sendResponse(exchange, 404);
@@ -172,7 +171,6 @@ public class TaskHandler extends Handler {
         READ_ALL,
         READ_ONE,
         CREATE,
-        CREATE_OR_UPDATE,
         UPDATE,
         DELETE,
         UNKNOWN

@@ -9,6 +9,7 @@ import com.google.gson.stream.JsonWriter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import services.TaskManager;
+import tasks.Status;
 import tasks.Task;
 
 import java.io.IOException;
@@ -25,11 +26,17 @@ abstract class Handler implements HttpHandler {
             .serializeNulls()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
             .registerTypeAdapter(Duration.class, new DurationAdapter())
+            .registerTypeAdapter(Status.class, new StatusAdapter())
             .create();
     protected final TaskManager taskManager;
 
     Handler(TaskManager taskManager) {
         this.taskManager = taskManager;
+    }
+
+    protected String[] getRequestPathParts(HttpExchange exchange) {
+        String requestPath = exchange.getRequestURI().getPath();
+        return requestPath.split("/", -1);
     }
 
     protected void sendResponse(HttpExchange exchange,
@@ -92,6 +99,30 @@ abstract class Handler implements HttpHandler {
                 return null;
             }
             return Duration.ofMinutes(Long.parseLong(duration));
+        }
+    }
+
+    static class StatusAdapter extends TypeAdapter<Status> {
+        @Override
+        public void write(JsonWriter jsonWriter, Status status) throws IOException {
+            if (status == null) {
+                jsonWriter.value(Status.NEW.toString());
+                return;
+            }
+            jsonWriter.value(status.toString());
+        }
+
+        @Override
+        public Status read(JsonReader jsonReader) throws IOException {
+            if (jsonReader.peek() == JsonToken.NULL) {
+                jsonReader.nextNull();
+                return Status.NEW;
+            }
+            String status = jsonReader.nextString();
+            if (status.isBlank()) {
+                return Status.NEW;
+            }
+            return Status.valueOf(status);
         }
     }
 }

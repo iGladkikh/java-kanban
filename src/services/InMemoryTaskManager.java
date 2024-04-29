@@ -255,11 +255,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearAllData() {
-        tasks.clear();
-        epics.clear();
-        subtasks.clear();
+        clearEpics();
+        clearTasks();
         prioritizedTasks.clear();
-        historyManager.clear();
     }
 
     @Override

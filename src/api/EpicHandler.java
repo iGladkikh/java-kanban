@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class EpicHandler extends TaskHandler {
-    static final String PATH = "epics";
+    static final String PATH_NAME = "epics";
 
     EpicHandler(TaskManager taskManager) {
         super(taskManager);
@@ -17,7 +17,7 @@ public class EpicHandler extends TaskHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange, PATH);
+        Endpoint endpoint = getEndpoint(exchange, PATH_NAME);
         if (endpoint.equals(Endpoint.UNKNOWN)) {
             String requestPath = exchange.getRequestURI().getPath();
             String[] pathParts = requestPath.split("/", -1);
@@ -50,7 +50,7 @@ public class EpicHandler extends TaskHandler {
         try {
             int epicId = parseTaskIdFromUri(exchange);
             if (taskManager.getEpics().containsKey(epicId)) {
-                String body = gson.toJson(taskManager.getEpic(parseTaskIdFromUri(exchange)));
+                String body = gson.toJson(taskManager.getEpic(epicId));
                 sendResponse(exchange, body, 200);
             } else {
                 sendResponse(exchange, 404);
