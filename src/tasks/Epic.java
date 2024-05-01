@@ -8,6 +8,11 @@ public class Epic extends Task {
     private final Set<Integer> subtasks;
     private LocalDateTime endTime;
 
+    public Epic(String name) {
+        super(name);
+        this.subtasks = new HashSet<>();
+    }
+
     public Epic(String name, String description) {
         super(name, description);
         this.subtasks = new HashSet<>();
@@ -52,6 +57,10 @@ public class Epic extends Task {
         return subtasks;
     }
 
+    public static Epic cloneWithNextId(Epic epic) {
+        return new Epic(epic.getName(), epic.getDescription());
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
@@ -68,7 +77,8 @@ public class Epic extends Task {
 
     @Override
     public String toSaveString(String delimiter) {
-        String[] s = new String[]{Type.EPIC.toString(), String.valueOf(getId()), getName(), getDescription()};
+        String[] s = new String[]{Type.EPIC.toString(), String.valueOf(getId()), getName(),
+                getDescription(), String.valueOf(getStatus())};
         return String.join(delimiter, s);
     }
 }

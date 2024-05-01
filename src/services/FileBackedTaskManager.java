@@ -49,7 +49,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         out.println(manager.getPrioritizedTasks());
     }
 
-    static FileBackedTaskManager loadFromFile(File file) {
+    public static FileBackedTaskManager loadFromFile(File file) {
         if (Files.exists(file.toPath())) {
             return new FileBackedTaskManager(Managers.getDefaultHistoryManager(), file);
         }
