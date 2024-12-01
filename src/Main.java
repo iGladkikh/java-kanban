@@ -1,3 +1,20 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
+import services.Managers;
+import services.TaskManager;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
+
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Main {
     static TaskManager manager;
 
@@ -14,6 +31,7 @@ public class Main {
                 System.out.println("\t--> " + task);
             }
         }
+
         System.out.println("\nПодзадачи:");
         for (Task subtask : manager.getSubtasks().values()) {
             System.out.println(subtask);
@@ -59,12 +77,63 @@ public class Main {
         int epic2 = manager.addEpic(new Epic("Важный эпик 2", "Описание Эпика2"));
         int subtask21 = manager.addSubtask(new Subtask("Задача1", "", Status.DONE, epic2));
         int subtask22 = manager.addSubtask(new Subtask("Задача2", "", Status.DONE, epic2));
-        manager.getEpic(epic2);
-        manager.getEpic(epic2);
+
+//        manager.getEpic(epic2);
+//        manager.getEpic(epic2);
         //manager.removeEpic(epic2);
         //manager.clearAllSubtasks();
         //manager.clearAllData();
 
+        manager.getTask(singleTask3.getId());
+        manager.getSubtask(subtask22);
+        manager.getSubtask(subtask21);
+        manager.getEpic(epic2);
+        manager.getTask(singleTask3.getId());
+        manager.getEpic(epic2);
+        manager.removeEpic(epic2);
+
         printAllTasks(manager);
+
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .registerTypeAdapter(Duration.class, new DurationAdapter())
+                .create();
+        String body = gson.toJson(manager.getTasks());
+        System.out.print(body);
+    }
+
+    static class LocalDateAdapter extends TypeAdapter<LocalDateTime> {
+        private static final DateTimeFormatter dtf = Task.DATE_TIME_FORMATTER;
+
+        @Override
+        public void write(JsonWriter jsonWriter, LocalDateTime localDateTime) throws IOException {
+            if (localDateTime == null) {
+                jsonWriter.nullValue();
+                return;
+            }
+            jsonWriter.value(localDateTime.format(dtf));
+        }
+
+        @Override
+        public LocalDateTime read(JsonReader jsonReader) throws IOException {
+            return LocalDateTime.parse(jsonReader.nextString(), dtf);
+        }
+    }
+
+    static class DurationAdapter extends TypeAdapter<Duration> {
+        @Override
+        public void write(JsonWriter jsonWriter, Duration duration) throws IOException {
+            if (duration == null) {
+                jsonWriter.nullValue();
+                return;
+            }
+            jsonWriter.value(duration.toMinutes());
+        }
+
+        @Override
+        public Duration read(JsonReader jsonReader) throws IOException {
+            return Duration.ofMinutes(jsonReader.nextLong());
+        }
     }
 }

@@ -1,13 +1,24 @@
+package services;
+
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
+import tasks.Status;
+import tasks.Subtask;
+import tasks.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryTaskManagerTest {
-    final TaskManager taskManager = Managers.getDefaultTaskManager();
+class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+    //TaskManager taskManager = Managers.getDefaultTaskManager();
     static Task lastTask;
     static Task lastEpic;
     static Task lastSubtask;
+
+    InMemoryTaskManagerTest() {
+        super.taskManager = new InMemoryTaskManager(Managers.getDefaultHistoryManager());
+    }
 
     @BeforeEach
     public void addTasks() {
@@ -93,13 +104,5 @@ class InMemoryTaskManagerTest {
         assertTrue(taskManager.getTasks().isEmpty(), "Не пусто.");
         assertTrue(taskManager.getEpics().isEmpty(), "Не пусто.");
         assertTrue(taskManager.getSubtasks().isEmpty(), "Не пусто.");
-    }
-
-    @Test
-    void addHistory() {
-        taskManager.getTask(lastTask.getId());
-        taskManager.getEpic(lastEpic.getId());
-        taskManager.getSubtask(lastSubtask.getId());
-        assertEquals(3, taskManager.getHistory().size(), "Неверное количество элементов в истории.");
     }
 }
